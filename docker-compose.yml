@@ -149,6 +149,8 @@ services:
       - 'sentry-symbolicator:/data'
   web:
     << : *sentry_defaults
+    ports:
+      - '9000:9000/tcp'
   cron:
     << : *sentry_defaults
     command: run cron
@@ -170,19 +172,19 @@ services:
       args:
         BASE_IMAGE: 'sentry-onpremise-local'
     command: '"0 0 * * * gosu sentry sentry cleanup --days $SENTRY_EVENT_RETENTION_DAYS"'
-  nginx:
-    << : *restart_policy
-    ports:
-      - '9000:80/tcp'
-    image: 'nginx:1.16'
-    volumes:
-      - type: bind
-        read_only: true
-        source: ./nginx
-        target: /etc/nginx
-    depends_on:
-      - web
-      - relay
+#  nginx:
+#    << : *restart_policy
+#    ports:
+#      - '9000:80/tcp'
+#    image: 'nginx:1.16'
+#    volumes:
+#      - type: bind
+#        read_only: true
+#        source: ./nginx
+#        target: /etc/nginx
+#    depends_on:
+#      - web
+#      - relay
   relay:
     << : *restart_policy
     image: '$RELAY_IMAGE'
